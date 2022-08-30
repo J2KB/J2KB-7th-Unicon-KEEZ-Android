@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "J2KB-7th-Unicon-KEEZ-Android"
 include ':app'
+include ':domain'
+include ':data'

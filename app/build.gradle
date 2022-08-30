@@ -48,7 +48,8 @@ android {
 }
 
 dependencies {
-    def hilt_version = '2.43.1'
+    implementation project(":data")
+    implementation project(":domain")
 
     // Jetpack LiveData
     implementation "androidx.compose.runtime:runtime-livedata:1.2.1"
@@ -66,10 +67,6 @@ dependencies {
 
     // Coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-
-    // Retrofit2
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     // 기본 생성 Library
     implementation 'androidx.core:core-ktx:1.8.0'
