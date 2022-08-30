@@ -1,4 +1,4 @@
-package com.j2kb.aac
+package com.j2kb.keez
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.j2kb.aac.ui.theme.J2KB7thUniconAACAndroidTheme
+import com.j2kb.keez.ui.theme.J2KB7thUniconAACAndroidTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.j2kb.aac.ui.theme
+package com.j2kb.keez.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

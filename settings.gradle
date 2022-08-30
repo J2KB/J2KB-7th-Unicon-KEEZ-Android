@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "J2KB-7th-Unicon-AAC-Android"
+rootProject.name = "J2KB-7th-Unicon-KEEZ-Android"
 include ':app'
