@@ -1,9 +1,10 @@
-package com.j2kb.keez
+package com.j2kb.keez.view.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.j2kb.keez.data.api.model.SampleData
 import com.j2kb.keez.domain.usecase.SampleUseCase
+import com.j2kb.keez.view.home.SampleSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
