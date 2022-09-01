@@ -1,4 +1,4 @@
-package com.j2kb.keez
+package com.j2kb.keez.view.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +33,7 @@ class SampleViewModel @Inject constructor(private val sampleUseCase: SampleUseCa
 
     fun showSideEffect() {
         intent {
-            postSideEffect(SampleSideEffect.Test("side effect 발생"))
+            postSideEffect(SampleSideEffect.Toast("side effect 발생"))
         }
     }
 }

@@ -1,8 +1,9 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-android-extensions'
 }
 
 android {
@@ -47,6 +48,10 @@ android {
     }
 }
 
+configurations.all {
+    exclude group: 'org.jetbrains', module: 'annotations-java5'
+}
+
 dependencies {
     implementation project(":data")
     implementation project(":domain")
@@ -67,6 +72,16 @@ dependencies {
 
     // Coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    // Markdown Test
+//    implementation "com.halilibo.compose-richtext:richtext-commonmark:0.13.0"
+    implementation "io.noties.markwon:core:4.6.2"
+    implementation 'androidx.annotation:annotation:1.4.0'
+    implementation "io.noties.markwon:syntax-highlight:4.6.2"
+    kapt 'io.noties:prism4j-bundler:2.0.0'
+
+    // android app compat
+    implementation 'androidx.appcompat:appcompat:1.5.0'
 
     // 기본 생성 Library
     implementation 'androidx.core:core-ktx:1.8.0'

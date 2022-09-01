@@ -1,7 +1,6 @@
-package com.j2kb.keez
+package com.j2kb.keez.view.login
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -12,60 +11,52 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.j2kb.keez.ui.theme.KEEZTheme
+import com.j2kb.keez.view.home.MainActivity
+import com.j2kb.keez.view.codeblock.CodeBlockActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
 
-    private val viewModel: SampleViewModel by viewModels()
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             KEEZTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
                     Column(
+                        modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Button(onClick = {
-                            viewModel.getData()
-                        }) {
-                            Text("샘플 데이터 불러오기")
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(text = "Google Login")
                         }
-                        ResultText {
-                            Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(text = "Kakao Login")
+                        }
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(text = "Naver Login")
+                        }
+                        Button(onClick = { /*TODO*/ }) {
+                            Text(text = "Apple Login")
+                        }
+                        Button(onClick = { viewModel.moveTo(this@LoginActivity, MainActivity::class.java) }) {
+                            Text(text = "Home 화면 로그인 없이 이동")
+                        }
+                        Button(onClick = { viewModel.moveTo(this@LoginActivity, CodeBlockActivity::class.java) }) {
+                            Text(text = "Markdown 테스트 화면 이동")
                         }
                     }
                 }
             }
         }
-    }
-
-    @Composable
-    private fun ResultText(onSideEffect: (text: String) -> Unit) {
-
-        val state by viewModel.container.stateFlow.collectAsState()
-
-        LaunchedEffect(viewModel) {
-            viewModel.container.sideEffectFlow.collect {
-                when (it) {
-                    is SampleSideEffect.Test -> onSideEffect(it.test)
-                }
-            }
-        }
-
-        Text("id: ${state.id}, name: ${state.name}, values: ${state.values}")
     }
 }
