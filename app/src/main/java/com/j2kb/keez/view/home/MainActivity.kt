@@ -44,9 +44,7 @@ class MainActivity : ComponentActivity() {
                         }) {
                             Text("샘플 데이터 불러오기")
                         }
-                        ResultText {
-                            Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
-                        }
+                        ResultText()
                     }
                 }
             }
@@ -54,18 +52,26 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ResultText(onSideEffect: (text: String) -> Unit) {
-
+    private fun ResultText() {
         val state by viewModel.container.stateFlow.collectAsState()
 
+        LaunchToastSideEffect()
+
+        Text("id: ${state.id}, name: ${state.name}, values: ${state.values}")
+    }
+
+    @Composable
+    private fun LaunchToastSideEffect() {
         LaunchedEffect(viewModel) {
             viewModel.container.sideEffectFlow.collect {
                 when (it) {
-                    is SampleSideEffect.Test -> onSideEffect(it.test)
+                    is SampleSideEffect.Toast -> Toast.makeText(
+                        applicationContext,
+                        it.test,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
-
-        Text("id: ${state.id}, name: ${state.name}, values: ${state.values}")
     }
 }

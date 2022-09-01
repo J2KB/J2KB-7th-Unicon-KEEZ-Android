@@ -1,29 +1,58 @@
 package com.j2kb.keez.view.codeblock
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.j2kb.keez.view.home.SampleSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.noties.markwon.syntax.Prism4jSyntaxHighlight
 import io.noties.markwon.syntax.Prism4jThemeDefault
 import io.noties.prism4j.Prism4j
 import io.noties.prism4j.annotations.PrismBundle
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-@PrismBundle(include = ["java", "kotlin", "swift"], grammarLocatorClassName = ".GrammarLocatorSourceCode")
-class CodeBlockViewModel @Inject constructor() : ViewModel() {
-    fun getTestCodeBlock(): CharSequence {
+@PrismBundle(
+    include = ["java", "kotlin", "swift"],
+    grammarLocatorClassName = ".GrammarLocatorSourceCode"
+)
+class CodeBlockViewModel @Inject constructor() : ContainerHost<CharSequence, SampleSideEffect>,
+    ViewModel() {
 
-        val codeString = getCodeString()
-        val code: CodeBlock.Code = CodeBlock.Code(CodeBlock.Language.SWIFT, codeString)
+    override val container = container<CharSequence, SampleSideEffect>(" ".subSequence(0, 0))
+    private var job: Job? = null
 
-        val prism = Prism4j(GrammarLocatorSourceCode())
-        val highlight = Prism4jSyntaxHighlight.create(prism, Prism4jThemeDefault.create(0))
-        val language = when (code.language) {
-            CodeBlock.Language.KOTLIN -> "kotlin"
-            CodeBlock.Language.JAVA -> "java"
-            CodeBlock.Language.SWIFT -> "swift"
+    init {
+        getCodeBlock()
+    }
+
+    private fun getCodeBlock() = intent {
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
+            /**
+             * TODO
+             *  추후에 서버에서 받아오는 방식으로 변경
+             *  getCodeString() */
+            val codeString = getCodeString()
+            val code: CodeBlock.Code = CodeBlock.Code(CodeBlock.Language.SWIFT, codeString)
+
+            val prism = Prism4j(GrammarLocatorSourceCode())
+            val highlight = Prism4jSyntaxHighlight.create(prism, Prism4jThemeDefault.create(0))
+            val language = when (code.language) {
+                CodeBlock.Language.KOTLIN -> "kotlin"
+                CodeBlock.Language.JAVA -> "java"
+                CodeBlock.Language.SWIFT -> "swift"
+            }
+
+            reduce { highlight.highlight(language, code.sourceCode) }
         }
-        return highlight.highlight(language, code.sourceCode)
+
     }
 
     private fun getCodeString(): String {

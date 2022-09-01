@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.j2kb.keez.data.api.model.SampleData
 import com.j2kb.keez.domain.usecase.SampleUseCase
-import com.j2kb.keez.view.home.SampleSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,7 +33,7 @@ class SampleViewModel @Inject constructor(private val sampleUseCase: SampleUseCa
 
     fun showSideEffect() {
         intent {
-            postSideEffect(SampleSideEffect.Test("side effect 발생"))
+            postSideEffect(SampleSideEffect.Toast("side effect 발생"))
         }
     }
 }
