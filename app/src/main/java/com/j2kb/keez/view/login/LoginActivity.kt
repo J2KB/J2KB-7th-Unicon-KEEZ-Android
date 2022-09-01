@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.j2kb.keez.ui.theme.KEEZTheme
 import com.j2kb.keez.view.home.MainActivity
-import com.j2kb.keez.view.markdown_test.MarkdownTestActivity
+import com.j2kb.keez.view.codeblock.CodeBlockActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,7 +51,7 @@ class LoginActivity : ComponentActivity() {
                         Button(onClick = { viewModel.moveTo(this@LoginActivity, MainActivity::class.java) }) {
                             Text(text = "Home 화면 로그인 없이 이동")
                         }
-                        Button(onClick = { viewModel.moveTo(this@LoginActivity, MarkdownTestActivity::class.java) }) {
+                        Button(onClick = { viewModel.moveTo(this@LoginActivity, CodeBlockActivity::class.java) }) {
                             Text(text = "Markdown 테스트 화면 이동")
                         }
                     }
