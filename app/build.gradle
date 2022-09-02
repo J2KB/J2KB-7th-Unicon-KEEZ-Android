@@ -6,6 +6,10 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def kakao_appkey = properties.getProperty("kakao.appkey")
+
 android {
     compileSdk 33
 
@@ -17,6 +21,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "KAKAO_APPKEY", "\"${kakao_appkey}\""
+        manifestPlaceholders = [kakaoAppKey: kakao_appkey]
+
         vectorDrawables {
             useSupportLibrary true
         }
@@ -74,11 +82,11 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     // Markdown Test
-//    implementation "com.halilibo.compose-richtext:richtext-commonmark:0.13.0"
-    implementation "io.noties.markwon:core:4.6.2"
-    implementation 'androidx.annotation:annotation:1.4.0'
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     kapt 'io.noties:prism4j-bundler:2.0.0'
+
+    // kakao login
+    implementation "com.kakao.sdk:v2-user:2.11.0" // 카카오 로그인
 
     // android app compat
     implementation 'androidx.appcompat:appcompat:1.5.0'

@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.j2kb.keez">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".KeezApp"
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -14,18 +15,37 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.J2KB7thUniconKEEZAndroid"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity android:name="com.j2kb.keez.view.home.MainActivity"/>
-        <activity android:name="com.j2kb.keez.view.codeblock.CodeBlockActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
-        <activity android:name=".view.login.LoginActivity"
+
+        <activity
+            android:name="com.j2kb.keez.view.login.LoginActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
+                <data android:scheme="kakao${kakaoAppKey}" android:host="oauth" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.j2kb.keez.view.home.MainActivity" />
+        <activity
+            android:name="com.j2kb.keez.view.codeblock.CodeBlockActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
 
     </application>
 

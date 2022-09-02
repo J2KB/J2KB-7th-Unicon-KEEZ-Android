@@ -39,7 +39,7 @@ class LoginActivity : ComponentActivity() {
                         Button(onClick = { /*TODO*/ }) {
                             Text(text = "Google Login")
                         }
-                        Button(onClick = { /*TODO*/ }) {
+                        Button(onClick = { viewModel.login(LoginType.KAKAO, this@LoginActivity) }) {
                             Text(text = "Kakao Login")
                         }
                         Button(onClick = { /*TODO*/ }) {
