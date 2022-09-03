@@ -8,8 +8,11 @@ plugins {
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def kakao_appkey = properties.getProperty("kakao.appkey")
-def googleServerKey = properties.getProperty("google.serverKey")
+def kakaoAppKey = properties.getProperty("kakao.app.key")
+def googleServerKey = properties.getProperty("google.server.key")
+def naverClientId = properties.getProperty("naver.client.id")
+def naverClientSecret = properties.getProperty("naver.client.secret")
+def naverClientName = properties.getProperty("naver.client.name")
 
 android {
     compileSdk 33
@@ -23,9 +26,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "KAKAO_APPKEY", "\"$kakao_appkey\""
+        buildConfigField "String", "KAKAO_APPKEY", "\"$kakaoAppKey\""
         buildConfigField "String", "GOOGLE_SERVER_KEY", "\"$googleServerKey\""
-        manifestPlaceholders = [kakaoAppKey: kakao_appkey]
+        buildConfigField "String", "NAVER_CLIENT_ID", "\"$naverClientId\""
+        buildConfigField "String", "NAVER_CLIENT_SECRET", "\"$naverClientSecret\""
+        buildConfigField "String", "NAVER_CLIENT_NAME", "\"$naverClientName\""
+
+        manifestPlaceholders = [kakaoAppKey: kakaoAppKey]
 
         vectorDrawables {
             useSupportLibrary true
@@ -93,13 +100,15 @@ dependencies {
     // kakao login
     implementation "com.kakao.sdk:v2-user:2.11.0" // 카카오 로그인
 
-    // android app compat
+    // naver login
+    implementation "com.navercorp.nid:oauth:5.1.1"
     implementation 'androidx.appcompat:appcompat:1.5.0'
 
     // 기본 생성 Library
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
+    implementation 'com.google.android.material:material:1.6.1'
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.5.1'

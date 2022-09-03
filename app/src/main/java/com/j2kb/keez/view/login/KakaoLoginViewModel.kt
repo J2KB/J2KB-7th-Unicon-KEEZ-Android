@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class KakaoLoginViewModel @Inject constructor() : ContainerHost<LoginResult, SampleSideEffect>, ViewModel() {
+class KakaoLoginViewModel @Inject constructor() : ContainerHost<LoginResult, SampleSideEffect>, OAuthLogin, ViewModel() {
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -66,11 +66,11 @@ class KakaoLoginViewModel @Inject constructor() : ContainerHost<LoginResult, Sam
         }
     }
 
-    private fun sendToken(token: String) = intent {
+    override fun sendToken(token: String) = intent {
         reduce { state.copy(token = token) }
     }
 
-    private fun sendException(message: String) = intent {
+    override fun sendException(message: String) = intent {
         postSideEffect(SampleSideEffect.Toast(message))
     }
 }

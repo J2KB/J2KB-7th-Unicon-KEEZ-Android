@@ -24,6 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GoogleLoginViewModel @Inject constructor() : ContainerHost<LoginResult, SampleSideEffect>,
+    OAuthLogin,
     ViewModel() {
     override val container = container<LoginResult, SampleSideEffect>(LoginResult())
 
@@ -45,25 +46,24 @@ class GoogleLoginViewModel @Inject constructor() : ContainerHost<LoginResult, Sa
         loginLauncher?.launch(signInIntent)
     }
 
-    fun logout() {
-        mGoogleSignInClient.signOut().addOnCompleteListener {
-            Log.i(KeezApp.TAG, "로그아웃 성공")
-        }.addOnCanceledListener {
-            Log.i(KeezApp.TAG, "로그아웃 취소")
-        }
-    }
-
     fun handleSignInResult(data: Intent?) = intent {
-
         val completedTask: Task<GoogleSignInAccount> =
             GoogleSignIn.getSignedInAccountFromIntent(data)
         try {
             val account: GoogleSignInAccount = completedTask.getResult(ApiException::class.java)
             Log.i(KeezApp.TAG, account.serverAuthCode ?: "없음")
-            reduce { state.copy(token = account.serverAuthCode ?: "") }
+            sendToken(account.serverAuthCode ?: "")
         } catch (e: ApiException) {
             Log.w(KeezApp.TAG, "signInResult:failed code=" + e.statusCode)
-            postSideEffect(SampleSideEffect.Toast("구글 로그인 실패"))
+            sendException("Google 로그인 실패")
         }
+    }
+
+    override fun sendToken(token: String) = intent {
+        reduce { state.copy(token = token) }
+    }
+
+    override fun sendException(message: String) = intent {
+        postSideEffect(SampleSideEffect.Toast(message))
     }
 }

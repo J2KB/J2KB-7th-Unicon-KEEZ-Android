@@ -20,6 +20,7 @@
 
         <activity
             android:name="com.j2kb.keez.view.login.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true">
 
             <intent-filter>
@@ -37,7 +38,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
                 <data android:scheme="kakao${kakaoAppKey}" android:host="oauth" />
             </intent-filter>
         </activity>

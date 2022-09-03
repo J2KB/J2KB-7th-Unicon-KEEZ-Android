@@ -35,6 +35,7 @@ class LoginActivity : ComponentActivity() {
 
     private val kakaoLoginViewModel: KakaoLoginViewModel by viewModels()
     private val googleLoginViewModel: GoogleLoginViewModel by viewModels()
+    private val naverLoginViewModel: NaverLoginViewModel by viewModels()
 
     private val googleLoginLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -65,7 +66,7 @@ class LoginActivity : ComponentActivity() {
                         Button(onClick = { kakaoLoginViewModel.login(this@LoginActivity) }) {
                             Text(text = "Kakao Login")
                         }
-                        Button(onClick = { /*TODO*/ }) {
+                        Button(onClick = { naverLoginViewModel.login(this@LoginActivity) }) {
                             Text(text = "Naver Login")
                         }
                         Button(onClick = { /*TODO*/ }) {
@@ -136,8 +137,9 @@ class LoginActivity : ComponentActivity() {
     private fun WaitToMove() {
         val kakaoState by kakaoLoginViewModel.container.stateFlow.collectAsState()
         val googleState by googleLoginViewModel.container.stateFlow.collectAsState()
+        val naverState by naverLoginViewModel.container.stateFlow.collectAsState()
 
-        findToken(kakaoState, googleState).let { token ->
+        findToken(kakaoState, googleState, naverState).let { token ->
             if (token.isNotEmpty()) {
                 startActivity(
                     Intent(
@@ -153,13 +155,12 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     private fun findToken(
-        kakaoState: LoginResult,
-        googleState: LoginResult
+        vararg loginResult: LoginResult
     ): String {
-        if (kakaoState.token.isNotEmpty()) {
-            return kakaoState.token
-        } else if (googleState.token.isNotEmpty()) {
-            return googleState.token
+        for (state in loginResult) {
+            if (state.token.isNotEmpty()) {
+                return state.token
+            }
         }
         return ""
     }
