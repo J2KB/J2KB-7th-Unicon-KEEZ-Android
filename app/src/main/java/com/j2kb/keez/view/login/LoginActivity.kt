@@ -1,14 +1,11 @@
 package com.j2kb.keez.view.login
 
-import android.app.Activity
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,8 +20,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.j2kb.keez.auth.LoginType
 import com.j2kb.keez.ui.theme.KEEZTheme
-import com.j2kb.keez.view.codeblock.CodeBlockActivity
 import com.j2kb.keez.view.home.MainActivity
 import com.j2kb.keez.view.home.SampleSideEffect
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,21 +30,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
 
-    private val kakaoLoginViewModel: KakaoLoginViewModel by viewModels()
-    private val googleLoginViewModel: GoogleLoginViewModel by viewModels()
-    private val naverLoginViewModel: NaverLoginViewModel by viewModels()
-
-    private val googleLoginLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                googleLoginViewModel.handleSignInResult(result.data)
-            }
-        }
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        googleLoginViewModel.settingForGoogleLogin(this@LoginActivity)
+        viewModel.initGoogleLogin(this@LoginActivity)
 
         setContent {
             KEEZTheme {
@@ -60,33 +48,32 @@ class LoginActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Button(onClick = { googleLoginViewModel.login(googleLoginLauncher) }) {
+                        Button(onClick = {
+                            viewModel.login(
+                                LoginType.GOOGLE,
+                                this@LoginActivity
+                            )
+                        }) {
                             Text(text = "Google Login")
                         }
-                        Button(onClick = { kakaoLoginViewModel.login(this@LoginActivity) }) {
+                        Button(onClick = {
+                            viewModel.login(
+                                LoginType.KAKAO,
+                                this@LoginActivity
+                            )
+                        }) {
                             Text(text = "Kakao Login")
                         }
-                        Button(onClick = { naverLoginViewModel.login(this@LoginActivity) }) {
+                        Button(onClick = {
+                            viewModel.login(
+                                LoginType.NAVER,
+                                this@LoginActivity
+                            )
+                        }) {
                             Text(text = "Naver Login")
                         }
                         Button(onClick = { /*TODO*/ }) {
                             Text(text = "Apple Login")
-                        }
-                        Button(onClick = {
-                            moveTo(
-                                this@LoginActivity,
-                                MainActivity::class.java
-                            )
-                        }) {
-                            Text(text = "Home 화면 로그인 없이 이동")
-                        }
-                        Button(onClick = {
-                            moveTo(
-                                this@LoginActivity,
-                                CodeBlockActivity::class.java
-                            )
-                        }) {
-                            Text(text = "Markdown 테스트 화면 이동")
                         }
                         setHiddenEffect()
                     }
@@ -97,49 +84,15 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     private fun setHiddenEffect() {
-        LaunchKakaoEffect()
-        LaunchGoogleEffect()
-        WaitToMove()
+        setSideEffect()
+        setToMoveHome()
     }
 
     @Composable
-    private fun LaunchKakaoEffect() {
-        LaunchedEffect(kakaoLoginViewModel) {
-            kakaoLoginViewModel.container.sideEffectFlow.collect {
-                showSideEffectToast(it)
-            }
-        }
+    private fun setToMoveHome() {
+        val state by viewModel.container.stateFlow.collectAsState()
 
-    }
-
-    @Composable
-    private fun LaunchGoogleEffect() {
-        LaunchedEffect(googleLoginViewModel) {
-            googleLoginViewModel.container.sideEffectFlow.collect {
-                showSideEffectToast(it)
-            }
-        }
-    }
-
-    private fun showSideEffectToast(it: SampleSideEffect) {
-        Toast.makeText(
-            applicationContext,
-            (it as SampleSideEffect.Toast).test,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun moveTo(activity: Activity, targetActivity: Class<*>) {
-        activity.startActivity(Intent(activity, targetActivity).addFlags(FLAG_ACTIVITY_NEW_TASK))
-    }
-
-    @Composable
-    private fun WaitToMove() {
-        val kakaoState by kakaoLoginViewModel.container.stateFlow.collectAsState()
-        val googleState by googleLoginViewModel.container.stateFlow.collectAsState()
-        val naverState by naverLoginViewModel.container.stateFlow.collectAsState()
-
-        findToken(kakaoState, googleState, naverState).let { token ->
+        state.token.let { token ->
             if (token.isNotEmpty()) {
                 startActivity(
                     Intent(
@@ -154,14 +107,15 @@ class LoginActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun findToken(
-        vararg loginResult: LoginResult
-    ): String {
-        for (state in loginResult) {
-            if (state.token.isNotEmpty()) {
-                return state.token
+    private fun setSideEffect() {
+        LaunchedEffect(viewModel) {
+            viewModel.container.sideEffectFlow.collect {
+                Toast.makeText(
+                    applicationContext,
+                    (it as SampleSideEffect.Toast).test,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
-        return ""
     }
 }
