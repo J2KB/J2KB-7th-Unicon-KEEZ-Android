@@ -39,7 +39,7 @@ class LoginActivity : ComponentActivity() {
     private val googleLoginLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                googleLoginViewModel.handleSignInResult(this, result.data)
+                googleLoginViewModel.handleSignInResult(result.data)
             }
         }
 
@@ -54,8 +54,6 @@ class LoginActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    LaunchKakaoEffect()
-                    LaunchGoogleEffect()
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,6 +87,7 @@ class LoginActivity : ComponentActivity() {
                         }) {
                             Text(text = "Markdown 테스트 화면 이동")
                         }
+                        setHiddenEffect()
                     }
                 }
             }
@@ -96,10 +95,14 @@ class LoginActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun LaunchKakaoEffect() {
-        val state by kakaoLoginViewModel.container.stateFlow.collectAsState()
-        moveToHome(state)
+    private fun setHiddenEffect() {
+        LaunchKakaoEffect()
+        LaunchGoogleEffect()
+        WaitToMove()
+    }
 
+    @Composable
+    private fun LaunchKakaoEffect() {
         LaunchedEffect(kakaoLoginViewModel) {
             kakaoLoginViewModel.container.sideEffectFlow.collect {
                 showSideEffectToast(it)
@@ -110,9 +113,6 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     private fun LaunchGoogleEffect() {
-        val state by googleLoginViewModel.container.stateFlow.collectAsState()
-        moveToHome(state)
-
         LaunchedEffect(googleLoginViewModel) {
             googleLoginViewModel.container.sideEffectFlow.collect {
                 showSideEffectToast(it)
@@ -133,16 +133,34 @@ class LoginActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun moveToHome(state: LoginResult) {
-        if (state.token.isNotEmpty()) {
-            startActivity(
-                Intent(
-                    this@LoginActivity,
-                    MainActivity::class.java
-                ).addFlags(FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra("token", state.token)
-            )
-            finish()
+    private fun WaitToMove() {
+        val kakaoState by kakaoLoginViewModel.container.stateFlow.collectAsState()
+        val googleState by googleLoginViewModel.container.stateFlow.collectAsState()
+
+        findToken(kakaoState, googleState).let { token ->
+            if (token.isNotEmpty()) {
+                startActivity(
+                    Intent(
+                        this@LoginActivity,
+                        MainActivity::class.java
+                    ).addFlags(FLAG_ACTIVITY_NEW_TASK)
+                        .putExtra("token", token)
+                )
+                finish()
+            }
         }
+    }
+
+    @Composable
+    private fun findToken(
+        kakaoState: LoginResult,
+        googleState: LoginResult
+    ): String {
+        if (kakaoState.token.isNotEmpty()) {
+            return kakaoState.token
+        } else if (googleState.token.isNotEmpty()) {
+            return googleState.token
+        }
+        return ""
     }
 }

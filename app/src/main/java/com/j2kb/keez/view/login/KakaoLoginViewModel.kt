@@ -1,19 +1,16 @@
 package com.j2kb.keez.view.login
 
 import android.app.Activity
-import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.j2kb.keez.KeezApp
-import com.j2kb.keez.view.home.MainActivity
 import com.j2kb.keez.view.home.SampleSideEffect
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect

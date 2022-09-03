@@ -9,6 +9,7 @@ plugins {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def kakao_appkey = properties.getProperty("kakao.appkey")
+def googleServerKey = properties.getProperty("google.serverKey")
 
 android {
     compileSdk 33
@@ -22,7 +23,8 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "KAKAO_APPKEY", "\"${kakao_appkey}\""
+        buildConfigField "String", "KAKAO_APPKEY", "\"$kakao_appkey\""
+        buildConfigField "String", "GOOGLE_SERVER_KEY", "\"$googleServerKey\""
         manifestPlaceholders = [kakaoAppKey: kakao_appkey]
 
         vectorDrawables {
