@@ -28,6 +28,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Toast.makeText(this, intent.getStringExtra("token"), Toast.LENGTH_SHORT).show()
+
         setContent {
             KEEZTheme {
                 // A surface container using the 'background' color from the theme
