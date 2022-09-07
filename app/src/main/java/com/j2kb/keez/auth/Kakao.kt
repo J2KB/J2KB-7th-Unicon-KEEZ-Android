@@ -9,20 +9,16 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
 object Kakao {
-    fun login(activity: Activity, callback: (OAuthToken?, Throwable?) -> Unit): LoginResult {
-
-        var result = LoginResult()
+    fun login(activity: Activity, callback: (OAuthToken?, Throwable?) -> Unit) {
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(activity)) {
             UserApiClient.instance.loginWithKakaoTalk(activity) { token, error ->
                 if (error != null) {
                     Log.e(KeezApp.TAG, "카카오톡으로 로그인 실패", error)
-                    result = LoginResult(message = "카카오톡 앱으로 로그인 실패", isOk = false)
 
                     // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
                     // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                        result = LoginResult(message = "카카오톡 로그인 취소", isOk = false)
                         return@loginWithKakaoTalk
                     }
 
@@ -30,12 +26,11 @@ object Kakao {
                     UserApiClient.instance.loginWithKakaoAccount(activity, callback = callback)
                 } else if (token != null) {
                     Log.i(KeezApp.TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    result = LoginResult(token = token.accessToken, isOk = true)
+                    callback.invoke(token, null)
                 }
             }
         } else {
             UserApiClient.instance.loginWithKakaoAccount(activity, callback = callback)
         }
-        return result
     }
 }
