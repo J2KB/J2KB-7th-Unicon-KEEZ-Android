@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface TestApiService {
+interface SampleApiService {
 
     @GET("/testValue")
     suspend fun getTestValues(): Response<SampleData>
@@ -14,5 +14,5 @@ interface TestApiService {
     @POST("/postValue")
     suspend fun postTestValues(
         @Body data: SampleData
-    )
+    ): Response<SampleData>
 }

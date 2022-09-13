@@ -1,6 +1,6 @@
 package com.j2kb.keez.domain
 
-import com.j2kb.keez.data.api.TestApiService
+import com.j2kb.keez.data.api.SampleApiService
 import com.j2kb.keez.domain.usecase.SampleUseCase
 import dagger.Module
 import dagger.Provides
@@ -14,7 +14,7 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun provideSampleData(testApiService: TestApiService): SampleUseCase {
+    fun provideSampleData(testApiService: SampleApiService): SampleUseCase {
         return SampleUseCase(testApiService)
     }
 }

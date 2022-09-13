@@ -4,7 +4,7 @@ import android.app.Application
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.j2kb.keez.data.api.TestApiService
+import com.j2kb.keez.data.api.SampleApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,13 +21,6 @@ class NetModule {
 
     @Provides
     @Singleton
-    fun provideHttpCache(application: Application): Cache {
-        val cacheSize = 10L * 1024 * 1024
-        return Cache(application.cacheDir, cacheSize)
-    }
-
-    @Provides
-    @Singleton
     fun provideGson(): Gson {
         return GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -36,9 +29,8 @@ class NetModule {
 
     @Provides
     @Singleton
-    fun provideOkhttpClient(cache: Cache): OkHttpClient {
+    fun provideOkhttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .cache(cache)
             .build()
     }
 
@@ -54,11 +46,11 @@ class NetModule {
 
     @Provides
     @Singleton
-    fun provideTestApiService(retrofit: Retrofit): TestApiService {
-        return retrofit.create(TestApiService::class.java)
+    fun provideTestApiService(retrofit: Retrofit): SampleApiService {
+        return retrofit.create(SampleApiService::class.java)
     }
 
     companion object {
-        private const val BASE_URL: String = "http://192.168.35.3:8080"
+        private const val BASE_URL: String = "http://192.168.35.153:8080"
     }
 }
