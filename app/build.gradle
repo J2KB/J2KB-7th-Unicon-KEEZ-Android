@@ -94,15 +94,10 @@ dependencies {
     implementation "io.noties.markwon:syntax-highlight:4.6.2"
     kapt 'io.noties:prism4j-bundler:2.0.0'
 
-    // google login
-    implementation 'com.google.android.gms:play-services-auth:20.3.0'
-
-    // kakao login
-    implementation "com.kakao.sdk:v2-user:2.11.0" // 카카오 로그인
-
-    // naver login
-    implementation "com.navercorp.nid:oauth:5.1.1"
-    implementation 'androidx.appcompat:appcompat:1.5.0'
+    // OAuth Login
+    implementation 'com.google.android.gms:play-services-auth:20.3.0'    // google login
+    implementation "com.kakao.sdk:v2-user:2.11.0"   // kakao login
+    implementation "com.navercorp.nid:oauth:5.1.1"  // naver login
 
     // 기본 생성 Library
     implementation 'androidx.core:core-ktx:1.8.0'
@@ -112,6 +107,9 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.5.1'
+
+    // App Compat Library
+    implementation 'androidx.appcompat:appcompat:1.5.0'
 
     // test library
     testImplementation 'junit:junit:4.13.2'
