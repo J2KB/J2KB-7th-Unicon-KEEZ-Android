@@ -21,12 +21,20 @@ class SampleViewModel @Inject constructor(private val sampleUseCase: SampleUseCa
     override val container = container<SampleData, SampleSideEffect>(SampleData())
     private var testJob: Job? = null
 
-    fun getData() = intent {
+    init {
+        getData()
+    }
+
+    private fun getData() = intent {
         testJob?.cancel()
         testJob = viewModelScope.launch(Dispatchers.IO) {
             val result = sampleUseCase()
-            reduce {
-                state.copy(result.id, result.name, result.values)
+            if (result.isNotNull()) {
+                reduce {
+                    state.copy(result.id, result.name, result.values)
+                }
+            } else {
+                showSideEffect()
             }
         }
     }

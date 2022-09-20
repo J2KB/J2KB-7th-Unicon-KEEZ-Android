@@ -1,15 +1,19 @@
 package com.j2kb.keez.view.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,14 +34,40 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val viewModel: SampleViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Toast.makeText(this, intent.getStringExtra("token"), Toast.LENGTH_SHORT).show()
 
         setContent {
             KEEZTheme {
                 MainScreenView()
+                setHiddenEffect()
+            }
+        }
+    }
+
+    @Composable
+    private fun setHiddenEffect() {
+        setSideEffect()
+        getInitialData()
+    }
+
+    @Composable
+    private fun getInitialData() {
+        val state by viewModel.container.stateFlow.collectAsState()
+        Text(text = state.name ?: "")
+    }
+
+    @Composable
+    private fun setSideEffect() {
+        LaunchedEffect(viewModel) {
+            viewModel.container.sideEffectFlow.collect {
+                Toast.makeText(
+                    applicationContext,
+                    (it as SampleSideEffect.Toast).test,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -48,7 +78,7 @@ class MainActivity : ComponentActivity() {
         Scaffold(
             bottomBar = { BottomNavigation(navController = navController) }
         ) {
-            Box(Modifier.padding(it)){
+            Box(Modifier.padding(it)) {
                 NavigationGraph(navController = navController)
             }
         }
@@ -110,7 +140,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun NavigationGraph(navController: NavHostController) {
-        NavHost(navController = navController, startDestination = BottomNavItem.Calendar.screenRoute) {
+        NavHost(
+            navController = navController,
+            startDestination = BottomNavItem.Calendar.screenRoute
+        ) {
             composable(BottomNavItem.Calendar.screenRoute) {
                 CalendarScreen()
             }

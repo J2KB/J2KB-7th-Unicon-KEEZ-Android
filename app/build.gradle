@@ -3,16 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-    id 'kotlin-android-extensions'
 }
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def kakaoAppKey = properties.getProperty("kakao.app.key")
-def googleServerKey = properties.getProperty("google.server.key")
-def naverClientId = properties.getProperty("naver.client.id")
-def naverClientSecret = properties.getProperty("naver.client.secret")
-def naverClientName = properties.getProperty("naver.client.name")
 
 android {
     compileSdk 33
@@ -20,19 +11,11 @@ android {
     defaultConfig {
         applicationId "com.j2kb.keez"
         minSdk 21
-        targetSdk 33
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField "String", "KAKAO_APPKEY", "\"$kakaoAppKey\""
-        buildConfigField "String", "GOOGLE_SERVER_KEY", "\"$googleServerKey\""
-        buildConfigField "String", "NAVER_CLIENT_ID", "\"$naverClientId\""
-        buildConfigField "String", "NAVER_CLIENT_SECRET", "\"$naverClientSecret\""
-        buildConfigField "String", "NAVER_CLIENT_NAME", "\"$naverClientName\""
-
-        manifestPlaceholders = [kakaoAppKey: kakaoAppKey]
 
         vectorDrawables {
             useSupportLibrary true
@@ -89,15 +72,6 @@ dependencies {
 
     // Coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-
-    // Markdown Test
-    implementation "io.noties.markwon:syntax-highlight:4.6.2"
-    kapt 'io.noties:prism4j-bundler:2.0.0'
-
-    // OAuth Login
-    implementation 'com.google.android.gms:play-services-auth:20.3.0'    // google login
-    implementation "com.kakao.sdk:v2-user:2.11.0"   // kakao login
-    implementation "com.navercorp.nid:oauth:5.1.1"  // naver login
 
     // 기본 생성 Library
     implementation 'androidx.core:core-ktx:1.8.0'

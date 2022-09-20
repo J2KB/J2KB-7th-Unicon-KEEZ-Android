@@ -14,7 +14,7 @@ dependencyResolutionManagement {
         maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/'}
     }
 }
-rootProject.name = "J2KB-7th-Unicon-KEEZ-Android"
+rootProject.name = "Android-MVI-Template"
 include ':app'
 include ':domain'
 include ':data'
