@@ -13,6 +13,7 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,20 +29,24 @@ class SampleViewModel @Inject constructor(private val sampleUseCase: SampleUseCa
     private fun getData() = intent {
         testJob?.cancel()
         testJob = viewModelScope.launch(Dispatchers.IO) {
-            val result = sampleUseCase()
-            if (result.isNotNull()) {
-                reduce {
-                    state.copy(result.id, result.name, result.values)
+            try {
+                val result = sampleUseCase()
+                if (result.isNotNull()) {
+                    reduce {
+                        state.copy(result.id, result.name, result.values)
+                    }
+                } else {
+                    showSideEffect("result is null")
                 }
-            } else {
-                showSideEffect()
+            } catch (e: RuntimeException) {
+                showSideEffect(e.message)
             }
         }
     }
 
-    fun showSideEffect() {
+    private fun showSideEffect(message: String?) {
         intent {
-            postSideEffect(SampleSideEffect.Toast("side effect 발생"))
+            postSideEffect(SampleSideEffect.Toast(message ?: "Unknown Error Message"))
         }
     }
 }

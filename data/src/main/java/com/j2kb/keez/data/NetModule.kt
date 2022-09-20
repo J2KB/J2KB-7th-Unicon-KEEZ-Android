@@ -14,6 +14,7 @@ import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Singleton
 
@@ -39,28 +40,16 @@ class NetModule {
 
     @Provides
     @Singleton
-    fun provideOkhttpClient(cache: Cache): OkHttpClient {
+    fun provideOkhttpClient(cache: Cache, connectivityInterceptor: ConnectivityInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .cache(cache)
-            .addInterceptor(Interceptor {
-                return@Interceptor onOnIntercept(it)
-            })
+            .addInterceptor(connectivityInterceptor)
             .build()
     }
 
-    @Throws(IOException::class)
-    private fun onOnIntercept(chain: Interceptor.Chain): Response {
-        try {
-            val response: Response = chain.proceed(chain.request())
-            val content = response.body()?.string() ?: ""
-            Log.d("OkHttp", content)
-            return response.newBuilder()
-                .body(ResponseBody.create(response.body()?.contentType(), content)).build()
-        } catch (exception: SocketTimeoutException) {
-            exception.printStackTrace()
-        }
-        return chain.proceed(chain.request())
-    }
+    @Provides
+    @Singleton
+    internal fun interceptor(): ConnectivityInterceptor = ConnectivityInterceptor()
 
     @Provides
     @Singleton
